@@ -1,0 +1,945 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>OVA: Redes Neuronales</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        :root {
+            --primary-color: #2563eb;
+            --secondary-color: #1e40af;
+            --accent-color: #3b82f6;
+            --text-color: #1f2937;
+            --bg-color: #f9fafb;
+            --card-bg: #ffffff;
+            --border-color: #e5e7eb;
+            --success-color: #10b981;
+            --error-color: #ef4444;
+        }
+
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background-color: var(--bg-color);
+            color: var(--text-color);
+            line-height: 1.6;
+        }
+
+        /* Header */
+        header {
+            background: linear-gradient(135deg, var(--primary-color), var(--secondary-color));
+            color: white;
+            padding: 2rem;
+            box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+        }
+
+        header h1 {
+            font-size: 2rem;
+            margin-bottom: 0.5rem;
+        }
+
+        header p {
+            font-size: 1.1rem;
+            opacity: 0.95;
+        }
+
+        /* Layout Container */
+        .container {
+            display: flex;
+            max-width: 1400px;
+            margin: 0 auto;
+            position: relative;
+        }
+
+        /* Sidebar Navigation */
+        .sidebar {
+            width: 280px;
+            background-color: var(--card-bg);
+            padding: 1.5rem;
+            box-shadow: 2px 0 10px rgba(0,0,0,0.05);
+            position: sticky;
+            top: 0;
+            height: 100vh;
+            overflow-y: auto;
+            transition: transform 0.3s ease;
+        }
+
+        .sidebar h3 {
+            color: var(--primary-color);
+            margin-bottom: 1rem;
+            font-size: 1.2rem;
+            border-bottom: 2px solid var(--primary-color);
+            padding-bottom: 0.5rem;
+        }
+
+        .nav-menu {
+            list-style: none;
+        }
+
+        .nav-item {
+            margin-bottom: 0.5rem;
+        }
+
+        .nav-link {
+            display: block;
+            padding: 0.6rem 1rem;
+            color: var(--text-color);
+            text-decoration: none;
+            border-radius: 6px;
+            transition: all 0.3s ease;
+            font-weight: 500;
+        }
+
+        .nav-link:hover, .nav-link:focus {
+            background-color: var(--accent-color);
+            color: white;
+            transform: translateX(5px);
+            outline: 2px solid var(--accent-color);
+            outline-offset: 2px;
+        }
+
+        .nav-subitem {
+            margin-left: 1rem;
+            margin-top: 0.3rem;
+        }
+
+        .nav-subitem .nav-link {
+            font-size: 0.9rem;
+            font-weight: normal;
+            padding: 0.4rem 0.8rem;
+        }
+
+        /* Mobile Menu Toggle */
+        .menu-toggle {
+            display: none;
+            position: fixed;
+            bottom: 20px;
+            right: 20px;
+            width: 60px;
+            height: 60px;
+            background-color: var(--primary-color);
+            color: white;
+            border: none;
+            border-radius: 50%;
+            font-size: 1.5rem;
+            cursor: pointer;
+            box-shadow: 0 4px 15px rgba(0,0,0,0.3);
+            z-index: 1000;
+            transition: transform 0.3s ease;
+        }
+
+        .menu-toggle:hover {
+            transform: scale(1.1);
+        }
+
+        /* Main Content */
+        .main-content {
+            flex: 1;
+            padding: 2rem;
+            max-width: 900px;
+        }
+
+        .section {
+            background-color: var(--card-bg);
+            padding: 2rem;
+            margin-bottom: 2rem;
+            border-radius: 10px;
+            box-shadow: 0 2px 8px rgba(0,0,0,0.08);
+        }
+
+        .section h2 {
+            color: var(--primary-color);
+            margin-bottom: 1.5rem;
+            font-size: 1.8rem;
+            border-left: 4px solid var(--primary-color);
+            padding-left: 1rem;
+        }
+
+        .section h3 {
+            color: var(--secondary-color);
+            margin-top: 1.5rem;
+            margin-bottom: 1rem;
+            font-size: 1.4rem;
+        }
+
+        .section h4 {
+            color: var(--text-color);
+            margin-top: 1.2rem;
+            margin-bottom: 0.8rem;
+            font-size: 1.1rem;
+        }
+
+        .section p {
+            margin-bottom: 1rem;
+            text-align: justify;
+        }
+
+        .section ul {
+            margin-left: 2rem;
+            margin-bottom: 1rem;
+        }
+
+        .section li {
+            margin-bottom: 0.5rem;
+        }
+
+        /* Images */
+        .content-image {
+            width: 100%;
+            height: 250px;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            border-radius: 10px;
+            margin: 1.5rem 0;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: white;
+            font-size: 1.2rem;
+            font-weight: bold;
+            text-align: center;
+            padding: 1rem;
+            box-shadow: 0 4px 15px rgba(0,0,0,0.15);
+        }
+
+        .img-neurons {
+            background: linear-gradient(135deg, #4facfe 0%, #00f2fe 100%);
+        }
+
+        .img-perceptron {
+            background: linear-gradient(135deg, #43e97b 0%, #38f9d7 100%);
+        }
+
+        .img-deep {
+            background: linear-gradient(135deg, #fa709a 0%, #fee140 100%);
+        }
+
+        .img-training {
+            background: linear-gradient(135deg, #30cfd0 0%, #330867 100%);
+        }
+
+        .img-applications {
+            background: linear-gradient(135deg, #a8edea 0%, #fed6e3 100%);
+        }
+
+        /* Quiz Section */
+        .quiz-container {
+            background-color: var(--bg-color);
+            padding: 1.5rem;
+            border-radius: 8px;
+            margin-top: 1rem;
+        }
+
+        .question {
+            margin-bottom: 2rem;
+            padding: 1.5rem;
+            background-color: var(--card-bg);
+            border-radius: 8px;
+            border-left: 4px solid var(--primary-color);
+        }
+
+        .question h4 {
+            margin-bottom: 1rem;
+            color: var(--primary-color);
+            font-size: 1.1rem;
+        }
+
+        .options {
+            list-style: none;
+        }
+
+        .option {
+            margin-bottom: 0.8rem;
+        }
+
+        .option label {
+            display: flex;
+            align-items: center;
+            padding: 0.8rem;
+            border: 2px solid var(--border-color);
+            border-radius: 6px;
+            cursor: pointer;
+            transition: all 0.3s ease;
+        }
+
+        .option label:hover {
+            border-color: var(--accent-color);
+            background-color: rgba(37, 99, 235, 0.05);
+        }
+
+        .option input[type="radio"] {
+            margin-right: 0.8rem;
+            cursor: pointer;
+            width: 18px;
+            height: 18px;
+        }
+
+        .submit-btn {
+            background-color: var(--primary-color);
+            color: white;
+            padding: 1rem 2rem;
+            border: none;
+            border-radius: 6px;
+            font-size: 1rem;
+            font-weight: bold;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            margin-top: 1rem;
+        }
+
+        .submit-btn:hover, .submit-btn:focus {
+            background-color: var(--secondary-color);
+            transform: translateY(-2px);
+            box-shadow: 0 4px 12px rgba(37, 99, 235, 0.4);
+        }
+
+        .result {
+            margin-top: 1.5rem;
+            padding: 1.5rem;
+            border-radius: 8px;
+            font-weight: bold;
+            display: none;
+        }
+
+        .result.success {
+            background-color: rgba(16, 185, 129, 0.1);
+            border: 2px solid var(--success-color);
+            color: var(--success-color);
+        }
+
+        .result.error {
+            background-color: rgba(239, 68, 68, 0.1);
+            border: 2px solid var(--error-color);
+            color: var(--error-color);
+        }
+
+        /* License Badge */
+        .license-badge {
+            display: inline-block;
+            background-color: var(--bg-color);
+            padding: 0.5rem 1rem;
+            border-radius: 6px;
+            border: 2px solid var(--primary-color);
+            margin-top: 1rem;
+            font-weight: 600;
+            color: var(--primary-color);
+        }
+
+        /* Footer */
+        footer {
+            background-color: var(--text-color);
+            color: white;
+            text-align: center;
+            padding: 1.5rem;
+            margin-top: 3rem;
+        }
+
+        /* Responsive Design */
+        @media (max-width: 968px) {
+            .container {
+                flex-direction: column;
+            }
+
+            .sidebar {
+                position: fixed;
+                left: 0;
+                top: 0;
+                width: 280px;
+                transform: translateX(-100%);
+                z-index: 999;
+                height: 100vh;
+            }
+
+            .sidebar.active {
+                transform: translateX(0);
+            }
+
+            .menu-toggle {
+                display: block;
+            }
+
+            .main-content {
+                padding: 1.5rem;
+            }
+
+            header h1 {
+                font-size: 1.5rem;
+            }
+
+            header p {
+                font-size: 1rem;
+            }
+        }
+
+        @media (max-width: 600px) {
+            .main-content {
+                padding: 1rem;
+            }
+
+            .section {
+                padding: 1.5rem;
+            }
+
+            .section h2 {
+                font-size: 1.5rem;
+            }
+
+            .content-image {
+                height: 200px;
+                font-size: 1rem;
+            }
+
+            header {
+                padding: 1.5rem;
+            }
+        }
+
+        /* Skip to content link for accessibility */
+        .skip-link {
+            position: absolute;
+            top: -40px;
+            left: 0;
+            background: var(--primary-color);
+            color: white;
+            padding: 8px;
+            text-decoration: none;
+            z-index: 100;
+        }
+
+        .skip-link:focus {
+            top: 0;
+        }
+    </style>
+</head>
+<body>
+    <a href="#main-content" class="skip-link">Saltar al contenido principal</a>
+
+    <header role="banner">
+        <h1>Objeto Virtual de Aprendizaje: Redes Neuronales</h1>
+        <p>Aprende los fundamentos de las redes neuronales en el campo de TI</p>
+    </header>
+
+    <div class="container">
+        <nav class="sidebar" id="sidebar" role="navigation" aria-label="Menú principal">
+            <h3>Contenidos</h3>
+            <ul class="nav-menu">
+                <li class="nav-item">
+                    <a href="#presentacion" class="nav-link" aria-label="Ir a Presentación">Presentación</a>
+                </li>
+                <li class="nav-item">
+                    <a href="#seccion-1-1" class="nav-link" aria-label="Ir a Introducción a las Redes Neuronales">1.1 Introducción a las Redes Neuronales</a>
+                    <ul class="nav-menu">
+                        <li class="nav-subitem"><a href="#seccion-1-1-1" class="nav-link">1.1.1 Historia</a></li>
+                        <li class="nav-subitem"><a href="#seccion-1-1-2" class="nav-link">1.1.2 Inspiración Biológica</a></li>
+                    </ul>
+                </li>
+                <li class="nav-item">
+                    <a href="#seccion-1-2" class="nav-link" aria-label="Ir a Arquitectura de Redes Neuronales">1.2 Arquitectura de Redes Neuronales</a>
+                    <ul class="nav-menu">
+                        <li class="nav-subitem"><a href="#seccion-1-2-1" class="nav-link">1.2.1 Perceptrón</a></li>
+                        <li class="nav-subitem"><a href="#seccion-1-2-2" class="nav-link">1.2.2 Capas</a></li>
+                    </ul>
+                </li>
+                <li class="nav-item">
+                    <a href="#seccion-1-3" class="nav-link" aria-label="Ir a Aprendizaje Profundo">1.3 Aprendizaje Profundo</a>
+                    <ul class="nav-menu">
+                        <li class="nav-subitem"><a href="#seccion-1-3-1" class="nav-link">1.3.1 Concepto</a></li>
+                        <li class="nav-subitem"><a href="#seccion-1-3-2" class="nav-link">1.3.2 Tipos de Redes</a></li>
+                    </ul>
+                </li>
+                <li class="nav-item">
+                    <a href="#seccion-1-4" class="nav-link" aria-label="Ir a Entrenamiento de Redes">1.4 Entrenamiento de Redes</a>
+                    <ul class="nav-menu">
+                        <li class="nav-subitem"><a href="#seccion-1-4-1" class="nav-link">1.4.1 Backpropagation</a></li>
+                        <li class="nav-subitem"><a href="#seccion-1-4-2" class="nav-link">1.4.2 Optimización</a></li>
+                    </ul>
+                </li>
+                <li class="nav-item">
+                    <a href="#seccion-1-5" class="nav-link" aria-label="Ir a Aplicaciones en TI">1.5 Aplicaciones en TI</a>
+                    <ul class="nav-menu">
+                        <li class="nav-subitem"><a href="#seccion-1-5-1" class="nav-link">1.5.1 Visión por Computadora</a></li>
+                        <li class="nav-subitem"><a href="#seccion-1-5-2" class="nav-link">1.5.2 Procesamiento de Lenguaje</a></li>
+                    </ul>
+                </li>
+                <li class="nav-item">
+                    <a href="#actividades" class="nav-link" aria-label="Ir a Actividades de Aprendizaje">Actividades de Aprendizaje</a>
+                </li>
+            </ul>
+        </nav>
+
+        <main class="main-content" id="main-content" role="main">
+            <!-- Presentación -->
+            <section id="presentacion" class="section" aria-labelledby="heading-presentacion">
+                <h2 id="heading-presentacion">Presentación del OVA</h2>
+                <p>Este recurso educativo te muestra cómo funcionan las redes neuronales y sus aplicaciones en el campo de las Tecnologías de la Información. Fue creado por <strong>Sebastian Martinez Pabon</strong>.</p>
+                
+                <p>El contenido se desarrolló bajo la metodología <strong>QCHE</strong> del Dr. Raúl E. Rodríguez Ibáñez, que consiste en cuatro fases fundamentales:</p>
+                <ul>
+                    <li><strong>¿Qué voy a hacer?</strong> - Identificación de objetivos de aprendizaje</li>
+                    <li><strong>¿Cómo lo voy a hacer?</strong> - Planificación de estrategias didácticas</li>
+                    <li><strong>Hacer</strong> - Desarrollo del contenido educativo</li>
+                    <li><strong>Evaluar</strong> - Verificación del aprendizaje adquirido</li>
+                </ul>
+                
+                <p>Este OVA está diseñado para público general, especialmente personas entre 16 y 40 años: estudiantes, profesores, investigadores y empresarios interesados en comprender los fundamentos de las redes neuronales sin necesidad de conocimientos técnicos avanzados.</p>
+                
+                <div class="license-badge" role="img" aria-label="Licencia Creative Commons">
+                    📄 Licencia: Creative Commons
+                </div>
+            </section>
+
+            <!-- 1.1 Introducción -->
+            <section id="seccion-1-1" class="section" aria-labelledby="heading-1-1">
+                <h2 id="heading-1-1">1.1 Introducción a las Redes Neuronales</h2>
+                
+                <div class="content-image img-neurons" role="img" aria-label="Representación visual de neuronas interconectadas">
+                    🧠 Neuronas Artificiales Interconectadas
+                </div>
+                
+                <p>Las redes neuronales artificiales son sistemas computacionales inspirados en el funcionamiento del cerebro humano. Estas estructuras están diseñadas para reconocer patrones, aprender de la experiencia y tomar decisiones basadas en datos complejos.</p>
+                
+                <p>Imagina que tu cerebro tiene millones de neuronas que se comunican entre sí para procesar información. Las redes neuronales artificiales intentan imitar este proceso, pero usando matemáticas y computadoras en lugar de células biológicas.</p>
+
+                <h3 id="seccion-1-1-1">1.1.1 Historia y Evolución</h3>
+                <p>El concepto de redes neuronales nació en 1943 cuando Warren McCulloch y Walter Pitts crearon el primer modelo matemático de una neurona artificial. Sin embargo, el verdadero boom llegó en las últimas dos décadas gracias al aumento de la capacidad de procesamiento de las computadoras.</p>
+                
+                <p>Durante los años 80 y 90, las redes neuronales enfrentaron un período conocido como "invierno de la IA" debido a limitaciones tecnológicas. Pero desde 2010, con el desarrollo de GPUs más potentes y grandes cantidades de datos disponibles, estas tecnologías han revolucionado campos como la medicina, el transporte y el entretenimiento.</p>
+
+                <h3 id="seccion-1-1-2">1.1.2 Inspiración Biológica</h3>
+                <p>Una neurona biológica recibe señales eléctricas de otras neuronas a través de sus dendritas, procesa esta información en el cuerpo celular y, si la señal es lo suficientemente fuerte, envía un impulso eléctrico a través de su axón hacia otras neuronas.</p>
+                
+                <p>Las neuronas artificiales funcionan de manera similar: reciben múltiples entradas numéricas, las multiplican por ciertos pesos (que representan la importancia de cada entrada), suman todos estos valores y aplican una función de activación que decide si la neurona debe "dispararse" o no.</p>
+            </section>
+
+            <!-- 1.2 Arquitectura -->
+            <section id="seccion-1-2" class="section" aria-labelledby="heading-1-2">
+                <h2 id="heading-1-2">1.2 Arquitectura de Redes Neuronales</h2>
+                
+                <div class="content-image img-perceptron" role="img" aria-label="Diagrama de un perceptrón simple">
+                    ⚡ Estructura del Perceptrón
+                </div>
+                
+                <p>La arquitectura de una red neuronal se refiere a cómo están organizadas y conectadas las neuronas artificiales. Esta estructura determina qué tipo de problemas puede resolver la red y qué tan eficiente será en su tarea.</p>
+
+                <h3 id="seccion-1-2-1">1.2.1 El Perceptrón: La Unidad Básica</h3>
+                <p>El perceptrón es la forma más simple de una neurona artificial. Fue inventado por Frank Rosenblatt en 1958 y funciona así:</p>
+                <ul>
+                    <li>Recibe varias entradas (por ejemplo, características de una imagen)</li>
+                    <li>Multiplica cada entrada por un peso específico</li>
+                    <li>Suma todos estos productos</li>
+                    <li>Aplica una función de decisión para generar una salida</li>
+                </ul>
+                
+                <p>Piensa en el perceptrón como un filtro de correo electrónico: recibe información sobre un mensaje (remitente, palabras clave, hora de envío) y decide si es spam o no basándose en la importancia que le da a cada factor.</p>
+
+                <h3 id="seccion-1-2-2">1.2.2 Capas de una Red Neuronal</h3>
+                <p>Las redes neuronales modernas están organizadas en capas que procesan la información de forma secuencial:</p>
+                
+                <h4>Capa de Entrada</h4>
+                <p>Es la primera capa que recibe los datos crudos. Si estás analizando imágenes de gatos, cada píxel de la imagen sería una neurona de entrada.</p>
+                
+                <h4>Capas Ocultas</h4>
+                <p>Son las capas intermedias donde ocurre la "magia". Aquí la red aprende a identificar patrones complejos. En el ejemplo de los gatos, las primeras capas ocultas podrían aprender a detectar bordes, las siguientes reconocerían formas como orejas o bigotes, y las últimas identificarían características específicas de los gatos.</p>
+                
+                <h4>Capa de Salida</h4>
+                <p>Es la última capa que proporciona el resultado final. En nuestro ejemplo, esta capa tendría una neurona que responde "es un gato" o "no es un gato".</p>
+            </section>
+
+            <!-- 1.3 Aprendizaje Profundo -->
+            <section id="seccion-1-3" class="section" aria-labelledby="heading-1-3">
+                <h2 id="heading-1-3">1.3 Aprendizaje Profundo (Deep Learning)</h2>
+                
+                <div class="content-image img-deep" role="img" aria-label="Ilustración de múltiples capas en aprendizaje profundo">
+                    🏗️ Arquitectura de Aprendizaje Profundo
+                </div>
+                
+                <p>El aprendizaje profundo es una rama especializada de las redes neuronales que utiliza arquitecturas con muchas capas ocultas. Mientras que una red neuronal tradicional podría tener 2-3 capas ocultas, una red profunda puede tener docenas o incluso cientos.</p>
+
+                <h3 id="seccion-1-3-1">1.3.1 ¿Qué hace "profundo" al aprendizaje profundo?</h3>
+                <p>La profundidad se refiere al número de capas que los datos atraviesan antes de llegar a una conclusión. Cuantas más capas, más compleja y abstracta es la información que la red puede aprender.</p>
+                
+                <p>Por ejemplo, cuando reconoces a tu amigo en una foto, tu cerebro procesa información en múltiples niveles: primero detecta formas básicas, luego características faciales, después patrones específicos y finalmente la identidad completa. Las redes profundas funcionan de manera similar.</p>
+
+                <h3 id="seccion-1-3-2">1.3.2 Tipos de Redes Neuronales Profundas</h3>
+                
+                <h4>Redes Neuronales Convolucionales (CNN)</h4>
+                <p>Especializadas en procesar imágenes. Son las responsables de que tu teléfono pueda desbloquear con tu cara o que las aplicaciones puedan aplicar filtros divertidos en tiempo real. Trabajan identificando patrones visuales en diferentes escalas.</p>
+                
+                <h4>Redes Neuronales Recurrentes (RNN)</h4>
+                <p>Diseñadas para trabajar con secuencias de datos, como texto o series temporales. Son perfectas para tareas como traducción automática, predicción de texto mientras escribes o análisis de tendencias en bolsa. Tienen "memoria" de lo que procesaron anteriormente.</p>
+                
+                <h4>Redes Generativas Adversarias (GAN)</h4>
+                <p>Estas redes son fascinantes porque funcionan en parejas: una genera contenido falso (como imágenes) y la otra intenta detectar si es falso. Compitiendo entre sí, ambas mejoran hasta que la generadora crea contenido casi indistinguible de lo real. Se usan para crear arte digital, mejorar fotografías y diseño de videojuegos.</p>
+            </section>
+
+            <!-- 1.4 Entrenamiento -->
+            <section id="seccion-1-4" class="section" aria-labelledby="heading-1-4">
+                <h2 id="heading-1-4">1.4 Entrenamiento de Redes Neuronales</h2>
+                
+                <div class="content-image img-training" role="img" aria-label="Proceso de entrenamiento de una red neuronal">
+                    📊 Ciclo de Entrenamiento
+                </div>
+                
+                <p>Entrenar una red neuronal es como enseñarle a un niño a reconocer animales. Le muestras muchos ejemplos, corriges sus errores y, con el tiempo, aprende a identificarlos correctamente incluso cuando ve animales nuevos.</p>
+
+                <h3 id="seccion-1-4-1">1.4.1 Retropropagación (Backpropagation)</h3>
+                <p>La retropropagación es el mecanismo fundamental que permite a las redes neuronales aprender de sus errores. Funciona así:</p>
+                
+                <ol>
+                    <li><strong>Predicción:</strong> La red recibe datos de entrada y genera una predicción</li>
+                    <li><strong>Cálculo de error:</strong> Se compara la predicción con la respuesta correcta</li>
+                    <li><strong>Propagación hacia atrás:</strong> El error se propaga desde la salida hasta la entrada</li>
+                    <li><strong>Ajuste de pesos:</strong> Cada conexión se ajusta ligeramente para reducir el error</li>
+                </ol>
+                
+                <p>Imagina que estás aprendiendo a lanzar dardos. Cada lanzamiento es una predicción, la distancia al centro es el error, y con cada intento ajustas tu técnica ligeramente. La retropropagación hace exactamente eso, pero con miles de ajustes simultáneos.</p>
+
+                <h3 id="seccion-1-4-2">1.4.2 Optimización y Mejora Continua</h3>
+                <p>El entrenamiento de una red neuronal requiere tomar decisiones importantes sobre cómo optimizar el aprendizaje:</p>
+                
+                <h4>Tasa de Aprendizaje</h4>
+                <p>Determina qué tan grandes son los ajustes en cada paso. Si es muy alta, la red podría "saltarse" la solución óptima. Si es muy baja, el entrenamiento será extremadamente lento. Es como ajustar el volumen de tu televisor: pequeños incrementos te dan más control.</p>
+                
+                <h4>Función de Pérdida</h4>
+                <p>Esta función mide qué tan equivocada está la red en sus predicciones. Es como una calificación que le dice a la red qué tan bien está haciendo su trabajo. Diferentes problemas requieren diferentes formas de medir el error.</p>
+                
+                <h4>Épocas de Entrenamiento</h4>
+                <p>Una época es un ciclo completo en el que la red ve todos los ejemplos de entrenamiento una vez. Generalmente, necesitas múltiples épocas para que la red aprenda bien, pero demasiadas pueden hacer que "memorice" los ejemplos en lugar de aprender patrones generales.</p>
+            </section>
+
+            <!-- 1.5 Aplicaciones -->
+            <section id="seccion-1-5" class="section" aria-labelledby="heading-1-5">
+                <h2 id="heading-1-5">1.5 Aplicaciones en Tecnologías de la Información</h2>
+                
+                <div class="content-image img-applications" role="img" aria-label="Diversas aplicaciones de redes neuronales en TI">
+                    🚀 Aplicaciones Prácticas en TI
+                </div>
+                
+                <p>Las redes neuronales han transformado el campo de las TI, permitiendo soluciones que antes eran imposibles o requerían años de programación manual. Veamos algunas aplicaciones concretas que probablemente uses en tu día a día.</p>
+
+                <h3 id="seccion-1-5-1">1.5.1 Visión por Computadora</h3>
+                <p>La visión por computadora permite que las máquinas "vean" y entiendan imágenes y videos como lo hacemos los humanos. Algunas aplicaciones incluyen:</p>
+                
+                <h4>Reconocimiento Facial</h4>
+                <p>Desde desbloquear tu smartphone hasta sistemas de seguridad en aeropuertos. Las redes neuronales analizan características faciales únicas para identificar personas con alta precisión.</p>
+                
+                <h4>Diagnóstico Médico</h4>
+                <p>Las redes pueden analizar radiografías, resonancias magnéticas y tomografías para detectar enfermedades como cáncer, fracturas o anomalías cerebrales, a veces con mayor precisión que especialistas humanos.</p>
+                
+                <h4>Conducción Autónoma</h4>
+                <p>Los vehículos autónomos utilizan múltiples redes neuronales para identificar peatones, señales de tráfico, otros vehículos y obstáculos en tiempo real, tomando decisiones de conducción seguras.</p>
+                
+                <h4>Control de Calidad Industrial</h4>
+                <p>En fábricas, las cámaras con IA inspeccionan productos a alta velocidad, detectando defectos microscópicos que el ojo humano podría perder.</p>
+
+                <h3 id="seccion-1-5-2">1.5.2 Procesamiento de Lenguaje Natural (NLP)</h3>
+                <p>Esta área permite que las computadoras comprendan, interpreten y generen lenguaje humano de manera natural:</p>
+                
+                <h4>Asistentes Virtuales</h4>
+                <p>Siri, Alexa y Google Assistant utilizan redes neuronales para entender tus comandos de voz, interpretar el contexto y responder de manera coherente.</p>
+                
+                <h4>Traducción Automática</h4>
+                <p>Servicios como Google Translate usan redes neuronales para traducir textos entre idiomas manteniendo el contexto y el significado, no solo palabra por palabra.</p>
+                
+                <h4>Análisis de Sentimientos</h4>
+                <p>Las empresas analizan comentarios en redes sociales, reseñas de productos y mensajes de clientes para entender si las opiniones son positivas, negativas o neutrales, ayudando a tomar mejores decisiones de negocio.</p>
+                
+                <h4>Generación de Contenido</h4>
+                <p>Herramientas modernas pueden escribir artículos, crear resúmenes, generar código de programación y hasta componer música o poesía basándose en patrones aprendidos de millones de ejemplos.</p>
+                
+                <h4>Detección de Spam y Ciberseguridad</h4>
+                <p>Las redes neuronales identifican correos maliciosos, detectan intentos de phishing y analizan patrones de tráfico de red para prevenir ataques cibernéticos antes de que causen daño.</p>
+            </section>
+
+            <!-- Actividades de Aprendizaje -->
+            <section id="actividades" class="section" aria-labelledby="heading-actividades">
+                <h2 id="heading-actividades">Actividades de Aprendizaje</h2>
+                <p>Ahora que has explorado los conceptos fundamentales de las redes neuronales, es momento de evaluar tu comprensión. Responde el siguiente cuestionario seleccionando la opción que consideres correcta.</p>
+                
+                <div class="quiz-container">
+                    <form id="quiz-form" aria-label="Cuestionario de evaluación">
+                        <!-- Pregunta 1 -->
+                        <div class="question">
+                            <h4>1. ¿En qué se inspiran las redes neuronales artificiales?</h4>
+                            <ul class="options">
+                                <li class="option">
+                                    <label>
+                                        <input type="radio" name="q1" value="a" required>
+                                        a) En el sistema circulatorio humano
+                                    </label>
+                                </li>
+                                <li class="option">
+                                    <label>
+                                        <input type="radio" name="q1" value="b">
+                                        b) En el funcionamiento del cerebro humano y sus neuronas
+                                    </label>
+                                </li>
+                                <li class="option">
+                                    <label>
+                                        <input type="radio" name="q1" value="c">
+                                        c) En el sistema operativo de las computadoras
+                                    </label>
+                                </li>
+                                <li class="option">
+                                    <label>
+                                        <input type="radio" name="q1" value="d">
+                                        d) En algoritmos de búsqueda binaria
+                                    </label>
+                                </li>
+                            </ul>
+                        </div>
+
+                        <!-- Pregunta 2 -->
+                        <div class="question">
+                            <h4>2. ¿Qué es el perceptrón en el contexto de las redes neuronales?</h4>
+                            <ul class="options">
+                                <li class="option">
+                                    <label>
+                                        <input type="radio" name="q2" value="a" required>
+                                        a) Un tipo de procesador de computadora
+                                    </label>
+                                </li>
+                                <li class="option">
+                                    <label>
+                                        <input type="radio" name="q2" value="b">
+                                        b) La unidad más simple de una neurona artificial que procesa entradas y genera salidas
+                                    </label>
+                                </li>
+                                <li class="option">
+                                    <label>
+                                        <input type="radio" name="q2" value="c">
+                                        c) Un lenguaje de programación para IA
+                                    </label>
+                                </li>
+                                <li class="option">
+                                    <label>
+                                        <input type="radio" name="q2" value="d">
+                                        d) Una base de datos especializada
+                                    </label>
+                                </li>
+                            </ul>
+                        </div>
+
+                        <!-- Pregunta 3 -->
+                        <div class="question">
+                            <h4>3. ¿Cuál es la función principal de la retropropagación (backpropagation) en el entrenamiento de redes neuronales?</h4>
+                            <ul class="options">
+                                <li class="option">
+                                    <label>
+                                        <input type="radio" name="q3" value="a" required>
+                                        a) Aumentar la velocidad de procesamiento
+                                    </label>
+                                </li>
+                                <li class="option">
+                                    <label>
+                                        <input type="radio" name="q3" value="b">
+                                        b) Almacenar datos de entrenamiento
+                                    </label>
+                                </li>
+                                <li class="option">
+                                    <label>
+                                        <input type="radio" name="q3" value="c">
+                                        c) Propagar el error hacia atrás para ajustar los pesos y mejorar el aprendizaje
+                                    </label>
+                                </li>
+                                <li class="option">
+                                    <label>
+                                        <input type="radio" name="q3" value="d">
+                                        d) Eliminar neuronas innecesarias
+                                    </label>
+                                </li>
+                            </ul>
+                        </div>
+
+                        <!-- Pregunta 4 -->
+                        <div class="question">
+                            <h4>4. ¿Qué tipo de red neuronal es más adecuada para el procesamiento y análisis de imágenes?</h4>
+                            <ul class="options">
+                                <li class="option">
+                                    <label>
+                                        <input type="radio" name="q4" value="a" required>
+                                        a) Redes Neuronales Recurrentes (RNN)
+                                    </label>
+                                </li>
+                                <li class="option">
+                                    <label>
+                                        <input type="radio" name="q4" value="b">
+                                        b) Redes Neuronales Convolucionales (CNN)
+                                    </label>
+                                </li>
+                                <li class="option">
+                                    <label>
+                                        <input type="radio" name="q4" value="c">
+                                        c) Perceptrón simple
+                                    </label>
+                                </li>
+                                <li class="option">
+                                    <label>
+                                        <input type="radio" name="q4" value="d">
+                                        d) Redes de Hopfield
+                                    </label>
+                                </li>
+                            </ul>
+                        </div>
+
+                        <!-- Pregunta 5 -->
+                        <div class="question">
+                            <h4>5. ¿Cuál de las siguientes NO es una aplicación común de las redes neuronales en TI?</h4>
+                            <ul class="options">
+                                <li class="option">
+                                    <label>
+                                        <input type="radio" name="q5" value="a" required>
+                                        a) Reconocimiento de voz y asistentes virtuales
+                                    </label>
+                                </li>
+                                <li class="option">
+                                    <label>
+                                        <input type="radio" name="q5" value="b">
+                                        b) Diagnóstico médico por imágenes
+                                    </label>
+                                </li>
+                                <li class="option">
+                                    <label>
+                                        <input type="radio" name="q5" value="c">
+                                        c) Traducción automática de idiomas
+                                    </label>
+                                </li>
+                                <li class="option">
+                                    <label>
+                                        <input type="radio" name="q5" value="d">
+                                        d) Reparación física de hardware de computadoras
+                                    </label>
+                                </li>
+                            </ul>
+                        </div>
+
+                        <button type="submit" class="submit-btn" aria-label="Enviar respuestas del cuestionario">Verificar Respuestas</button>
+                    </form>
+
+                    <div id="result" class="result" role="alert" aria-live="polite"></div>
+                </div>
+            </section>
+        </main>
+    </div>
+
+    <button class="menu-toggle" id="menuToggle" aria-label="Abrir o cerrar menú de navegación" aria-expanded="false">
+        ☰
+    </button>
+
+    <footer role="contentinfo">
+        <p>&copy; 2024 Sebastian Martinez Pabon | Metodología QCHE - Dr. Raúl E. Rodríguez Ibáñez</p>
+        <p>Licencia Creative Commons - Uso educativo libre</p>
+    </footer>
+
+    <script>
+        // Mobile menu toggle
+        const menuToggle = document.getElementById('menuToggle');
+        const sidebar = document.getElementById('sidebar');
+        
+        menuToggle.addEventListener('click', function() {
+            sidebar.classList.toggle('active');
+            const isExpanded = sidebar.classList.contains('active');
+            menuToggle.setAttribute('aria-expanded', isExpanded);
+            menuToggle.textContent = isExpanded ? '✕' : '☰';
+        });
+
+        // Close menu when clicking on a link
+        const navLinks = document.querySelectorAll('.nav-link');
+        navLinks.forEach(link => {
+            link.addEventListener('click', function() {
+                if (window.innerWidth <= 968) {
+                    sidebar.classList.remove('active');
+                    menuToggle.setAttribute('aria-expanded', 'false');
+                    menuToggle.textContent = '☰';
+                }
+            });
+        });
+
+        // Smooth scroll
+        document.querySelectorAll('a[href^="#"]').forEach(anchor => {
+            anchor.addEventListener('click', function (e) {
+                e.preventDefault();
+                const target = document.querySelector(this.getAttribute('href'));
+                if (target) {
+                    target.scrollIntoView({
+                        behavior: 'smooth',
+                        block: 'start'
+                    });
+                    target.focus();
+                }
+            });
+        });
+
+        // Quiz functionality
+        const quizForm = document.getElementById('quiz-form');
+        const resultDiv = document.getElementById('result');
+        
+        const correctAnswers = {
+            q1: 'b',
+            q2: 'b',
+            q3: 'c',
+            q4: 'b',
+            q5: 'd'
+        };
+
+        quizForm.addEventListener('submit', function(e) {
+            e.preventDefault();
+            
+            let score = 0;
+            let totalQuestions = Object.keys(correctAnswers).length;
+            
+            for (let question in correctAnswers) {
+                const selectedAnswer = document.querySelector(`input[name="${question}"]:checked`);
+                if (selectedAnswer && selectedAnswer.value === correctAnswers[question]) {
+                    score++;
+                }
+            }
+            
+            const percentage = (score / totalQuestions) * 100;
+            resultDiv.style.display = 'block';
+            
+            if (percentage >= 80) {
+                resultDiv.className = 'result success';
+                resultDiv.innerHTML = `
+                    <p>🎉 ¡Excelente trabajo!</p>
+                    <p>Has respondido correctamente ${score} de ${totalQuestions} preguntas (${percentage}%)</p>
+                    <p>Demuestras un muy buen entendimiento de las redes neuronales.</p>
+                `;
+            } else if (percentage >= 60) {
+                resultDiv.className = 'result';
+                resultDiv.style.backgroundColor = 'rgba(251, 191, 36, 0.1)';
+                resultDiv.style.borderColor = '#f59e0b';
+                resultDiv.style.color = '#f59e0b';
+                resultDiv.innerHTML = `
+                    <p>👍 ¡Buen intento!</p>
+                    <p>Has respondido correctamente ${score} de ${totalQuestions} preguntas (${percentage}%)</p>
+                    <p>Te recomendamos revisar los contenidos nuevamente para reforzar algunos conceptos.</p>
+                `;
+            } else {
+                resultDiv.className = 'result error';
+                resultDiv.innerHTML = `
+                    <p>📚 Sigue practicando</p>
+                    <p>Has respondido correctamente ${score} de ${totalQuestions} preguntas (${percentage}%)</p>
+                    <p>Te sugerimos revisar cuidadosamente todos los contenidos del OVA y volver a intentar.</p>
+                `;
+            }
+            
+            resultDiv.scrollIntoView({ behavior: 'smooth', block: 'nearest' });
+        });
+
+        // Keyboard navigation enhancement
+        document.addEventListener('keydown', function(e) {
+            if (e.key === 'Escape' && sidebar.classList.contains('active')) {
+                sidebar.classList.remove('active');
+                menuToggle.setAttribute('aria-expanded', 'false');
+                menuToggle.textContent = '☰';
+                menuToggle.focus();
+            }
+        });
+    </script>
+</body>
+</html>
